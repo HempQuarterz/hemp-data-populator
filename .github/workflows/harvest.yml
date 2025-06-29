@@ -1,0 +1,61 @@
+name: Hemp Data Harvest
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Run mode'
+        required: true
+        default: 'once'
+        type: choice
+        options:
+          - once
+          - trigger
+      urls:
+        description: 'URLs to scrape (comma-separated, for trigger mode)'
+        required: false
+
+jobs:
+  harvest:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Build project
+      run: npm run build
+    
+    - name: Run harvest
+      env:
+        SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+        SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        LOG_LEVEL: info
+      run: |
+        if [ "${{ github.event_name }}" = "schedule" ]; then
+          npm run start -- --mode=once
+        elif [ "${{ github.event.inputs.mode }}" = "trigger" ]; then
+          npm run start -- --mode=trigger --urls="${{ github.event.inputs.urls }}"
+        else
+          npm run start -- --mode=once
+        fi
+    
+    - name: Upload logs
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: harvest-logs-${{ github.run_id }}
+        path: logs/
+        retention-days: 30
