@@ -1,0 +1,47 @@
+{
+  "name": "hemp-data-populator",
+  "version": "1.0.0",
+  "description": "Autonomous data harvester for industrial hemp uses and products",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "run:once": "tsx src/index.ts --mode=once",
+    "run:trigger": "tsx src/index.ts --mode=trigger",
+    "test": "jest",
+    "lint": "eslint src/**/*.ts"
+  },
+  "keywords": [
+    "hemp",
+    "industrial-hemp",
+    "data-scraping",
+    "automation",
+    "MCP"
+  ],
+  "author": "HempQuarterz",
+  "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "axios": "^1.7.2",
+    "cheerio": "^1.0.0",
+    "commander": "^12.1.0",
+    "cron": "^3.1.7",
+    "dotenv": "^16.4.5",
+    "p-limit": "^3.1.0",
+    "pdf-parse": "^1.1.1",
+    "puppeteer": "^23.0.0",
+    "winston": "^3.13.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.10",
+    "@types/jest": "^29.5.12",
+    "@typescript-eslint/eslint-plugin": "^7.16.0",
+    "@typescript-eslint/parser": "^7.16.0",
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.5",
+    "tsx": "^4.16.2",
+    "typescript": "^5.5.3"
+  }
+}
