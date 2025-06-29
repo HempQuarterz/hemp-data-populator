@@ -22,8 +22,15 @@ export class DataProcessor {
     
     const unique: HempProduct[] = [];
     let duplicates = 0;
+    let invalid = 0;
     
     for (const product of products) {
+      // Validate product data first
+      if (!this.isValidProduct(product)) {
+        invalid++;
+        continue;
+      }
+      
       // Clean and normalize the product data
       const cleaned = this.cleanProduct(product);
       
@@ -41,8 +48,37 @@ export class DataProcessor {
       }
     }
     
-    logger.info(`Processed: ${unique.length} unique, ${duplicates} duplicates`);
+    logger.info(`Processed: ${unique.length} unique, ${duplicates} duplicates, ${invalid} invalid`);
     return { unique, duplicates };
+  }
+  
+  private isValidProduct(product: HempProduct): boolean {
+    // Check if product name is just a number
+    if (/^\d+$/.test(product.product_name)) {
+      logger.warn(`Invalid product: numeric name "${product.product_name}"`);
+      return false;
+    }
+    
+    // Check if plant part is just a number
+    if (/^\d+$/.test(product.plant_part)) {
+      logger.warn(`Invalid product: numeric plant_part "${product.plant_part}" for "${product.product_name}"`);
+      return false;
+    }
+    
+    // Check for minimum data quality
+    if (!product.product_name || product.product_name.length < 3) {
+      logger.warn(`Invalid product: name too short "${product.product_name}"`);
+      return false;
+    }
+    
+    // Check if description is empty and product name is generic
+    if ((!product.description || product.description.trim() === '') && 
+        product.product_name.length < 5) {
+      logger.warn(`Invalid product: insufficient data for "${product.product_name}"`);
+      return false;
+    }
+    
+    return true;
   }
   
   private cleanProduct(product: HempProduct): HempProduct {

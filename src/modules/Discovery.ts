@@ -48,43 +48,68 @@ export class Discovery {
         type: 'csv',
         score: 0,
         license: 'Sample Data'
+      },
+      {
+        url: `file://${process.cwd()}/sample-data/hemp-products-batch2.csv`,
+        type: 'csv',
+        score: 0,
+        license: 'Sample Data'
       }
     ];
     
-    // Check if sample file exists
+    // Check if sample files exist
     try {
       const fs = await import('fs/promises');
       const path = await import('path');
-      const samplePath = path.join(process.cwd(), 'sample-data', 'hemp-products.csv');
-      await fs.access(samplePath);
-      logger.info('Found local sample data file');
-    } catch {
-      logger.warn('Sample data file not found, using remote sources only');
-      sources.shift(); // Remove local file if it doesn't exist
+      const validSources: DataSource[] = [];
+      
+      for (const source of sources) {
+        if (source.url.startsWith('file://')) {
+          const filePath = source.url.replace('file://', '');
+          try {
+            await fs.access(filePath);
+            validSources.push(source);
+            logger.info(`Found local sample data file: ${filePath}`);
+          } catch {
+            logger.warn(`Sample data file not found: ${filePath}`);
+          }
+        }
+      }
+      
+      sources.length = 0;
+      sources.push(...validSources);
+    } catch (error) {
+      logger.error('Error checking local files:', error);
     }
     
     // Add remote sources
     const remoteSources: DataSource[] = [
-      // GitHub Cannabis/Hemp Datasets
+      // Working data sources based on recent searches
       {
-        url: 'https://raw.githubusercontent.com/kushyapp/cannabis-dataset/master/dataset/Strains.csv',
+        url: 'https://data.boston.gov/dataset/1192aba2-0099-45e9-bbbb-94208b9b70c9/resource/f53d03f4-f076-44f8-9cab-d6900b9a4444/download/cannabis-active-licenses.csv',
         type: 'csv',
-        score: 0,
-        license: 'MIT'
-      },
-      {
-        url: 'https://raw.githubusercontent.com/kushyapp/cannabis-dataset/master/dataset/Products.csv',
-        type: 'csv',
-        score: 0,
-        license: 'MIT'
-      },
-      {
-        url: 'https://downloads.usda.library.cornell.edu/usda-esmis/files/gf06h2430/3t947c84r/mg74s940n/hempan24.pdf',
-        type: 'pdf',
         score: 0,
         license: 'Public Domain'
       },
-      // Hemp Industry Associations
+      // Hemp/Cannabis industry sites that might have data
+      {
+        url: 'https://mjbizdaily.com/chart-of-the-week/',
+        type: 'html',
+        score: 0
+      },
+      {
+        url: 'https://www.newcannabisventures.com/cannabis-company-revenue-ranking/',
+        type: 'html',
+        score: 0
+      },
+      // Academic and research sources
+      {
+        url: 'https://www.mdpi.com/2077-0472/10/4/129/htm',
+        type: 'html',
+        score: 0,
+        license: 'CC BY'
+      },
+      // Hemp industry associations
       {
         url: 'https://thehia.org/resources/hemp-products/',
         type: 'html',
@@ -94,13 +119,6 @@ export class Discovery {
         url: 'https://hempindustrydaily.com/data/',
         type: 'html',
         score: 0
-      },
-      // Academic sources
-      {
-        url: 'https://www.mdpi.com/2077-0472/10/4/129/htm',
-        type: 'html',
-        score: 0,
-        license: 'CC BY'
       },
       // Hemp business directories
       {
@@ -112,13 +130,6 @@ export class Discovery {
         url: 'https://www.leafly.com/news/strains-products/industrial-hemp-uses',
         type: 'html',
         score: 0
-      },
-      // USDA Hemp Data
-      {
-        url: 'https://quickstats.nass.usda.gov/api/api_GET',
-        type: 'json',
-        score: 0,
-        license: 'Public Domain'
       }
     ];
     
