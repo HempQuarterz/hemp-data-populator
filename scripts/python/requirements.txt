@@ -1,0 +1,2 @@
+pdfplumber>=0.9.0
+pypdf2>=3.0.0
