@@ -6,61 +6,36 @@ export async function ensureSchema(): Promise<void> {
   logger.info('Checking database schema...');
   
   try {
-    // Check if we need to create hemp_uses table or use existing tables
-    const { data: tables } = await supabase.rpc('pg_tables', {
-      schemaname: 'public'
-    });
+    // Simple approach: try to select from each table
+    const tablesToCheck = [
+      { name: config.database.tables.products, displayName: 'Products' },
+      { name: config.database.tables.companies, displayName: 'Companies' },
+      { name: config.database.tables.runs, displayName: 'Agent Runs' }
+    ];
     
-    const existingTables = tables?.map((t: any) => t.tablename) || [];
-    
-    // We'll use the existing hemp_automation_products table
-    if (!existingTables.includes(config.database.tables.products)) {
-      logger.warn(`Table ${config.database.tables.products} not found. It should exist.`);
-    } else {
-      logger.info(`✅ Using existing table: ${config.database.tables.products}`);
+    for (const table of tablesToCheck) {
+      try {
+        const { error } = await supabase
+          .from(table.name)
+          .select('id')
+          .limit(1);
+        
+        if (error) {
+          logger.error(`❌ Table ${table.name} check failed:`, error.message);
+          throw new Error(`Required table '${table.name}' is not accessible or doesn't exist`);
+        } else {
+          logger.info(`✅ ${table.displayName} table verified: ${table.name}`);
+        }
+      } catch (err) {
+        logger.error(`Failed to access ${table.name}:`, err);
+        throw err;
+      }
     }
     
-    // Check for companies table
-    if (!existingTables.includes(config.database.tables.companies)) {
-      logger.warn(`Table ${config.database.tables.companies} not found. It should exist.`);
-    } else {
-      logger.info(`✅ Using existing table: ${config.database.tables.companies}`);
-    }
-    
-    // Check for runs table
-    if (!existingTables.includes(config.database.tables.runs)) {
-      logger.warn(`Table ${config.database.tables.runs} not found. It should exist.`);
-    } else {
-      logger.info(`✅ Using existing table: ${config.database.tables.runs}`);
-    }
-    
-    // Add any necessary indexes for performance
-    await createIndexesIfNeeded();
+    logger.info('✅ All required tables verified');
     
   } catch (error) {
     logger.error('Schema verification failed:', error);
     throw error;
-  }
-}
-
-async function createIndexesIfNeeded(): Promise<void> {
-  try {
-    // Create index on product name and plant_part for faster deduplication
-    const indexName = 'idx_hemp_products_dedup';
-    
-    const { error } = await supabase.rpc('create_index_if_not_exists', {
-      index_name: indexName,
-      table_name: config.database.tables.products,
-      columns: ['name', 'plant_part', 'industry']
-    }).single();
-    
-    if (error && !error.message?.includes('already exists')) {
-      logger.warn('Could not create index:', error);
-    } else {
-      logger.info('✅ Deduplication index ready');
-    }
-  } catch (error) {
-    // Index creation is not critical, so we just log the warning
-    logger.warn('Index creation skipped:', error);
   }
 }

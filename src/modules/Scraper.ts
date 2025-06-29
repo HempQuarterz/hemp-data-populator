@@ -114,34 +114,96 @@ export class Scraper {
   }
   
   private async scrapeCSV(url: string): Promise<HempProduct[]> {
-    // In a real implementation, this would parse CSV properly
-    // For now, we'll use a basic approach
-    const response = await axios.get(url, {
-      headers: { 'User-Agent': config.scraping.userAgent },
-      timeout: config.scraping.timeout
-    });
+    let data: string;
     
-    const lines = response.data.split('\n');
-    const headers = lines[0].toLowerCase().split(',').map((h: string) => h.trim());
+    // Handle local file URLs
+    if (url.startsWith('file://')) {
+      try {
+        const fs = await import('fs/promises');
+        const filePath = url.replace('file://', '');
+        data = await fs.readFile(filePath, 'utf-8');
+        logger.info('Reading local CSV file:', filePath);
+      } catch (error) {
+        logger.error('Failed to read local file:', error);
+        throw error;
+      }
+    } else {
+      // Handle remote URLs
+      const response = await axios.get(url, {
+        headers: { 'User-Agent': config.scraping.userAgent },
+        timeout: config.scraping.timeout
+      });
+      data = response.data;
+    }
+    
+    const lines = data.split('\n').filter(line => line.trim());
+    if (lines.length < 2) {
+      logger.warn('CSV file has no data rows');
+      return [];
+    }
+    
+    // Parse CSV properly (handling quoted fields)
+    const parseCSVLine = (line: string): string[] => {
+      const result: string[] = [];
+      let current = '';
+      let inQuotes = false;
+      
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        const nextChar = line[i + 1];
+        
+        if (char === '"') {
+          if (inQuotes && nextChar === '"') {
+            // Escaped quote
+            current += '"';
+            i++; // Skip next quote
+          } else {
+            // Toggle quote state
+            inQuotes = !inQuotes;
+          }
+        } else if (char === ',' && !inQuotes) {
+          // End of field
+          result.push(current.trim());
+          current = '';
+        } else {
+          current += char;
+        }
+      }
+      
+      // Don't forget the last field
+      result.push(current.trim());
+      return result;
+    };
+    
+    const headers = parseCSVLine(lines[0].toLowerCase());
     const products: HempProduct[] = [];
     
     // Find relevant column indices
-    const nameIdx = headers.findIndex(h => h.includes('product') || h.includes('name'));
-    const descIdx = headers.findIndex(h => h.includes('description') || h.includes('use'));
-    const partIdx = headers.findIndex(h => h.includes('part') || h.includes('component'));
-    const industryIdx = headers.findIndex(h => h.includes('industry') || h.includes('sector'));
+    const nameIdx = headers.findIndex((h: string) => h.includes('product') || h.includes('name'));
+    const descIdx = headers.findIndex((h: string) => h.includes('description') || h.includes('use'));
+    const partIdx = headers.findIndex((h: string) => h.includes('part') || h.includes('component'));
+    const industryIdx = headers.findIndex((h: string) => h.includes('industry') || h.includes('sector'));
+    const benefitsIdx = headers.findIndex((h: string) => h.includes('benefit'));
+    const sourceIdx = headers.findIndex((h: string) => h.includes('source') || h.includes('url'));
     
     for (let i = 1; i < lines.length; i++) {
-      const cells = lines[i].split(',').map((c: string) => c.trim());
+      const cells = parseCSVLine(lines[i]);
       
-      if (cells.length > nameIdx && cells[nameIdx]) {
-        products.push({
+      if (cells.length > nameIdx && nameIdx >= 0 && cells[nameIdx]) {
+        const product: HempProduct = {
           product_name: cells[nameIdx] || 'Unknown',
-          description: cells[descIdx] || '',
-          plant_part: cells[partIdx] || this.extractPlantPart(lines[i]),
-          industry: cells[industryIdx] || this.extractIndustry(lines[i]),
-          source_url: url
-        });
+          description: (descIdx >= 0 ? cells[descIdx] : '') || '',
+          plant_part: (partIdx >= 0 ? cells[partIdx] : '') || this.extractPlantPart(lines[i]),
+          industry: (industryIdx >= 0 ? cells[industryIdx] : '') || this.extractIndustry(lines[i]),
+          source_url: (sourceIdx >= 0 ? cells[sourceIdx] : '') || url
+        };
+        
+        // Add benefits if available
+        if (benefitsIdx >= 0 && cells[benefitsIdx]) {
+          product.benefits = cells[benefitsIdx].split(',').map(b => b.trim()).filter(b => b);
+        }
+        
+        products.push(product);
       }
     }
     

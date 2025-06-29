@@ -1,0 +1,46 @@
+product_name,description,plant_part,industry,benefits,source_url
+Hemp Protein Powder,High-quality plant-based protein supplement with all essential amino acids,seed,Food & Nutrition,"Complete protein source, Easy digestion, Muscle building",https://example.com/hemp-protein
+Hemp Seed Oil,Cold-pressed oil rich in omega-3 and omega-6 fatty acids,seed,Food & Nutrition,"Heart health, Skin health, Anti-inflammatory",https://example.com/hemp-oil
+Hemp Milk,Dairy-free milk alternative made from hemp seeds,seed,Food & Nutrition,"Lactose-free, Rich in minerals, Sustainable",https://example.com/hemp-milk
+Hemp Flour,Gluten-free flour alternative for baking,seed,Food & Nutrition,"High fiber, Gluten-free, Protein-rich",https://example.com/hemp-flour
+Hemp Hearts,Shelled hemp seeds for direct consumption,seed,Food & Nutrition,"Omega fatty acids, Minerals, Easy to digest",https://example.com/hemp-hearts
+Hemp Fabric,Durable and sustainable textile material,fiber,Textiles,"Breathable, Antimicrobial, UV resistant",https://example.com/hemp-fabric
+Hemp T-Shirt,Comfortable clothing made from hemp fiber,fiber,Textiles,"Soft texture, Durable, Eco-friendly",https://example.com/hemp-clothing
+Hemp Rope,Strong cordage for various applications,fiber,Textiles,"High tensile strength, Biodegradable, Water resistant",https://example.com/hemp-rope
+Hemp Canvas,Heavy-duty fabric for bags and outdoor gear,fiber,Textiles,"Weather resistant, Long-lasting, Sustainable",https://example.com/hemp-canvas
+Hemp Denim,Sustainable alternative to cotton denim,fiber,Textiles,"Durable, Softens with wear, Less water usage",https://example.com/hemp-denim
+Hempcrete,Sustainable building material made from hemp hurds and lime,stem,Construction,"Insulation, Carbon negative, Fire resistant",https://example.com/hempcrete
+Hemp Insulation,Natural insulation material for buildings,fiber,Construction,"Thermal efficiency, Mold resistant, Non-toxic",https://example.com/hemp-insulation
+Hemp Particle Board,Compressed board made from hemp fibers,stem,Construction,"Formaldehyde-free, Strong, Sustainable",https://example.com/hemp-board
+Hemp Bricks,Building blocks made from compressed hemp,stem,Construction,"Lightweight, Insulating, Sustainable",https://example.com/hemp-bricks
+Hemp Plaster,Natural plaster made from hemp and lime,stem,Construction,"Breathable, Antimicrobial, Humidity regulating",https://example.com/hemp-plaster
+Hemp Biocomposite,Automotive interior panels and components,fiber,Automotive,"Lightweight, Strong, Recyclable",https://example.com/hemp-auto
+Hemp Door Panels,Car door panels made from hemp fiber composite,fiber,Automotive,"Impact resistant, Lightweight, Sustainable",https://example.com/hemp-doors
+Hemp Dashboard,Vehicle dashboard made from hemp composite,fiber,Automotive,"Heat resistant, Durable, Eco-friendly",https://example.com/hemp-dash
+Hemp Brake Pads,Friction material for automotive brakes,fiber,Automotive,"Heat dissipation, Quiet operation, Non-toxic",https://example.com/hemp-brakes
+Hemp Seat Cushions,Automotive seating made with hemp fiber,fiber,Automotive,"Breathable, Comfortable, Antimicrobial",https://example.com/hemp-seats
+Hemp Face Cream,Moisturizing cream with hemp seed oil,seed,Cosmetics,"Anti-aging, Moisturizing, Natural",https://example.com/hemp-cream
+Hemp Shampoo,Hair care product with hemp oil,seed,Cosmetics,"Strengthening, Moisturizing, Scalp health",https://example.com/hemp-shampoo
+Hemp Lip Balm,Protective lip care with hemp seed oil,seed,Cosmetics,"Healing, Moisturizing, Natural SPF",https://example.com/hemp-lip
+Hemp Body Lotion,Full-body moisturizer with hemp extracts,seed,Cosmetics,"Hydrating, Anti-inflammatory, Vitamin-rich",https://example.com/hemp-lotion
+Hemp Soap,Natural soap made with hemp oil,seed,Cosmetics,"Cleansing, Moisturizing, Gentle",https://example.com/hemp-soap
+CBD Oil,Cannabidiol extract for wellness applications,flower,Pharmaceutical,"Pain relief, Anxiety reduction, Anti-inflammatory",https://example.com/cbd-oil
+Hemp Extract Capsules,Dietary supplement with hemp compounds,flower,Pharmaceutical,"Wellness support, Natural remedy, Standardized dose",https://example.com/hemp-capsules
+Hemp Topical Cream,Pain relief cream with hemp extracts,flower,Pharmaceutical,"Localized relief, Anti-inflammatory, Fast-acting",https://example.com/hemp-topical
+Hemp Tincture,Liquid hemp extract for sublingual use,flower,Pharmaceutical,"Fast absorption, Precise dosing, Versatile",https://example.com/hemp-tincture
+Hemp Balm,Healing salve with hemp compounds,flower,Pharmaceutical,"Skin healing, Pain relief, Natural ingredients",https://example.com/hemp-balm
+Hemp Paper,Sustainable paper product from hemp fiber,fiber,Paper,"Tree-free, Durable, Recyclable",https://example.com/hemp-paper
+Hemp Cardboard,Packaging material from hemp pulp,fiber,Paper,"Strong, Biodegradable, Sustainable",https://example.com/hemp-cardboard
+Hemp Tissue Paper,Soft tissue products from hemp,fiber,Paper,"Soft, Strong when wet, Sustainable",https://example.com/hemp-tissue
+Hemp Notebook,Stationery made from hemp paper,fiber,Paper,"Eco-friendly, Durable pages, Unique texture",https://example.com/hemp-notebook
+Hemp Packaging,Sustainable packaging solutions,fiber,Paper,"Compostable, Protective, Customizable",https://example.com/hemp-packaging
+Hemp Bioplastic,Biodegradable plastic alternative,fiber,Bioplastics,"Compostable, Renewable, Non-toxic",https://example.com/hemp-plastic
+Hemp Bottles,Packaging bottles made from hemp plastic,fiber,Bioplastics,"BPA-free, Biodegradable, Lightweight",https://example.com/hemp-bottles
+Hemp Cutlery,Disposable utensils from hemp bioplastic,fiber,Bioplastics,"Compostable, Sturdy, Heat-resistant",https://example.com/hemp-cutlery
+Hemp 3D Printing Filament,Material for 3D printing applications,fiber,Bioplastics,"Sustainable, Strong prints, Biodegradable",https://example.com/hemp-3d
+Hemp Composite Material,Advanced material for various applications,fiber,Bioplastics,"Versatile, Strong, Eco-friendly",https://example.com/hemp-composite
+Hemp Biodiesel,Renewable fuel from hemp seed oil,seed,Energy,"Carbon neutral, Renewable, Clean burning",https://example.com/hemp-fuel
+Hemp Pellets,Biomass fuel pellets from hemp stalks,stem,Energy,"High heat output, Low ash, Sustainable",https://example.com/hemp-pellets
+Hemp Ethanol,Bioethanol fuel from hemp biomass,whole plant,Energy,"Renewable, High yield, Clean fuel",https://example.com/hemp-ethanol
+Hemp Charcoal,Activated carbon from hemp stalks,stem,Energy,"Water filtration, Air purification, Sustainable",https://example.com/hemp-charcoal
+Hemp Biomass,Raw material for energy production,whole plant,Energy,"Versatile, Renewable, High yield",https://example.com/hemp-biomass

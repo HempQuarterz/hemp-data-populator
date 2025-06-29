@@ -1,12 +1,14 @@
 #!/usr/bin/env node
-import { Command } from 'commander';
+
+// Load environment variables FIRST, before any other imports
 import dotenv from 'dotenv';
+dotenv.config();
+
+// Now import everything else
+import { Command } from 'commander';
 import { DataHarvester } from './core/DataHarvester';
 import { logger } from './utils/logger';
 import { RunMode } from './types';
-
-// Load environment variables
-dotenv.config();
 
 const program = new Command();
 

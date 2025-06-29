@@ -1,7 +1,16 @@
+// Ensure environment variables are available
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  console.error('Error: Missing required environment variables');
+  console.error('SUPABASE_URL:', process.env.SUPABASE_URL ? 'Set' : 'Missing');
+  console.error('SUPABASE_SERVICE_ROLE_KEY:', process.env.SUPABASE_SERVICE_ROLE_KEY ? 'Set' : 'Missing');
+  console.error('Please ensure .env file exists and contains these variables');
+  process.exit(1);
+}
+
 export const config = {
   supabase: {
-    url: process.env.SUPABASE_URL!,
-    serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY!
+    url: process.env.SUPABASE_URL,
+    serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY
   },
   scraping: {
     rateLimitDelayMs: parseInt(process.env.RATE_LIMIT_DELAY_MS || '1000'),

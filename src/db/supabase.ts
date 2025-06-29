@@ -1,23 +1,44 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { config } from '../config';
 import { logger } from '../utils/logger';
 
-// Initialize Supabase client
-export const supabase = createClient(
-  config.supabase.url,
-  config.supabase.serviceRoleKey,
-  {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false
+// Lazy-load Supabase client
+let supabaseClient: SupabaseClient | null = null;
+
+export function getSupabase(): SupabaseClient {
+  if (!supabaseClient) {
+    // Check if config values are available
+    if (!config.supabase.url || !config.supabase.serviceRoleKey) {
+      throw new Error('Supabase configuration missing. Ensure SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set.');
     }
+    
+    supabaseClient = createClient(
+      config.supabase.url,
+      config.supabase.serviceRoleKey,
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false
+        }
+      }
+    );
   }
-);
+  
+  return supabaseClient;
+}
+
+// Export a getter for backward compatibility
+export const supabase = new Proxy({} as SupabaseClient, {
+  get(target, prop) {
+    return getSupabase()[prop as keyof SupabaseClient];
+  }
+});
 
 // Verify connection
 export async function verifyConnection(): Promise<boolean> {
   try {
-    const { data, error } = await supabase
+    const client = getSupabase();
+    const { data, error } = await client
       .from(config.database.tables.runs)
       .select('count')
       .limit(1);
