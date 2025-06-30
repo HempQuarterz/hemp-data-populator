@@ -1,0 +1,78 @@
+{
+  "validation": {
+    "product": {
+      "name": {
+        "minLength": 3,
+        "maxLength": 200,
+        "forbidden_patterns": ["^\\d+$", "^test", "^example", "^sample"],
+        "required_keywords": ["hemp", "cannabis", "cbd"]
+      },
+      "description": {
+        "minLength": 10,
+        "required_if_name_short": true
+      },
+      "plant_part": {
+        "allowed_values": [
+          "seed", "seeds", 
+          "fiber", "fibre", 
+          "flower", "flowers",
+          "leaf", "leaves",
+          "stem", "stalk", "stalks",
+          "hurd", "hurds",
+          "root", "roots",
+          "oil",
+          "whole plant",
+          "biomass",
+          "sprouts",
+          "extract"
+        ],
+        "forbidden_patterns": ["^\\d+$"]
+      },
+      "industry": {
+        "forbidden_values": ["Other", "Unknown", "N/A"],
+        "forbidden_patterns": ["^\\d+$"],
+        "min_length": 3
+      }
+    },
+    "source": {
+      "blacklisted_domains": [
+        "gist.githubusercontent.com/petroniocandido"
+      ],
+      "trusted_domains": [
+        "usda.gov",
+        "europa.eu", 
+        "data.gov",
+        "hemp.org",
+        "thehia.org",
+        "hempindustrydaily.com",
+        "ministryofhemp.com"
+      ],
+      "quality_thresholds": {
+        "min_quality_score": 1,
+        "max_numeric_ratio": 0.5,
+        "min_hemp_keywords": 1
+      }
+    }
+  },
+  "monitoring": {
+    "alert_thresholds": {
+      "suspicious_products_percent": 10,
+      "missing_descriptions_percent": 20,
+      "invalid_plant_parts_count": 5
+    },
+    "auto_clean": {
+      "enabled": false,
+      "dry_run": true,
+      "max_deletions_per_run": 100
+    }
+  },
+  "database_constraints": {
+    "enforce_at_db_level": true,
+    "check_constraints": [
+      "name_not_numeric",
+      "name_min_length",
+      "plant_part_not_numeric",
+      "industry_not_other"
+    ]
+  }
+}

@@ -78,6 +78,49 @@ export class DataProcessor {
       return false;
     }
     
+    // Additional validation rules
+    
+    // Must contain "hemp" or "cannabis" in name or description
+    const lowerName = product.product_name.toLowerCase();
+    const lowerDesc = (product.description || '').toLowerCase();
+    if (!lowerName.includes('hemp') && !lowerName.includes('cannabis') && 
+        !lowerName.includes('cbd') && !lowerDesc.includes('hemp')) {
+      logger.warn(`Invalid product: not hemp-related "${product.product_name}"`);
+      return false;
+    }
+    
+    // Industry must be meaningful (not "Other" or numeric)
+    if (!product.industry || product.industry === 'Other' || /^\d+$/.test(product.industry)) {
+      logger.warn(`Invalid product: bad industry "${product.industry}" for "${product.product_name}"`);
+      return false;
+    }
+    
+    // Plant part must be from allowed list
+    const validPlantParts = [
+      'seed', 'seeds', 'fiber', 'fibre', 'flower', 'leaves', 'leaf', 
+      'stem', 'stalk', 'hurds', 'hurd', 'roots', 'root', 'oil', 
+      'whole plant', 'biomass', 'sprouts', 'extract'
+    ];
+    
+    const plantPartLower = product.plant_part.toLowerCase();
+    const isValidPlantPart = validPlantParts.some(part => 
+      plantPartLower.includes(part) || part.includes(plantPartLower)
+    );
+    
+    if (!isValidPlantPart) {
+      logger.warn(`Invalid product: unknown plant_part "${product.plant_part}" for "${product.product_name}"`);
+      return false;
+    }
+    
+    // Check for suspicious patterns
+    if (product.source_url && product.source_url.includes('gist.github')) {
+      logger.warn(`Suspicious source: GitHub gist for "${product.product_name}"`);
+      // Extra scrutiny for GitHub gists
+      if (!product.description || product.description.length < 20) {
+        return false;
+      }
+    }
+    
     return true;
   }
   

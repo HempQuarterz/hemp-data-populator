@@ -3,6 +3,7 @@ import { logger } from '../utils/logger';
 import { Discovery } from '../modules/Discovery';
 import { Scraper } from '../modules/Scraper';
 import { DataProcessor } from '../modules/DataProcessor';
+import { SourceValidator } from '../modules/SourceValidator';
 import { DatabaseService } from '../services/DatabaseService';
 import { HarvestRunResult, DataSource } from '../types';
 import { ensureSchema, verifyConnection } from '../db';
@@ -11,6 +12,7 @@ export class DataHarvester {
   private discovery: Discovery;
   private scraper: Scraper;
   private processor: DataProcessor;
+  private validator: SourceValidator;
   private database: DatabaseService;
   private cronJob?: CronJob;
 
@@ -18,6 +20,7 @@ export class DataHarvester {
     this.discovery = new Discovery();
     this.scraper = new Scraper();
     this.processor = new DataProcessor();
+    this.validator = new SourceValidator();
     this.database = new DatabaseService();
   }
 
@@ -61,9 +64,27 @@ export class DataHarvester {
         try {
           logger.info(`🌐 Processing: ${source.url}`);
           
+          // Validate source before scraping
+          const isValidSource = await this.validator.validateSource(source);
+          if (!isValidSource) {
+            logger.warn(`Skipping invalid source: ${source.url}`);
+            continue;
+          }
+          
           // Scrape the source
           const scrapeResult = await this.scraper.scrape(source);
           result.products_found += scrapeResult.products.length;
+          
+          // Validate scraped data
+          const isValidData = this.validator.validateScrapedData(
+            scrapeResult.products, 
+            source.url
+          );
+          if (!isValidData) {
+            logger.error(`Invalid data from ${source.url}, skipping`);
+            result.errors.push(`Invalid data quality from ${source.url}`);
+            continue;
+          }
           
           // Process and deduplicate
           const processed = await this.processor.process(scrapeResult.products);

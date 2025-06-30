@@ -11,6 +11,8 @@
     "run:once:win": "set NODE_ENV=production&& tsx src/index.ts --mode=once",
     "run:trigger": "cross-env tsx src/index.ts --mode=trigger",
     "monitor": "tsx src/monitor.ts",
+    "quality": "tsx src/quality-monitor.ts",
+    "quality:clean": "tsx src/quality-monitor.ts --clean",
     "test": "jest",
     "lint": "eslint src/**/*.ts"
   },
